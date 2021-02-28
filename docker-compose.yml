@@ -12,7 +12,7 @@ services:
       - NET_ADMIN
       - SYS_ADMIN
     container_name: unbound
-    image: mvance/unbound:1.13.1
+    image: mvance/unbound:1.11.0
     ports:
       - 5335:53/udp
       - 5335:53/tcp
