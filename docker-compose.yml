@@ -14,15 +14,15 @@ services:
     container_name: unbound
     image: mvance/unbound:1.11.0
     ports:
-      - 5335:53/udp
-      - 5335:53/tcp
+      - 53:53/udp
+      - 53:53/tcp
     volumes:
-      - ./unbound.conf:/etc/unbound/unbound.conf
+      - ./unboundconf/:/opt/unbound/etc/unbound/
       - ./root.hints:/var/unbound/etc/root.hints
     restart: always
     networks:
       unbound-pihole:
-        ipv4_address: 10.5.0.100
+        ipv4_address: 10.5.0.2
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
@@ -34,7 +34,7 @@ services:
       - "53443:443/tcp"
     environment:
       TZ: 'America/Chicago'
-      PIHOLE_DNS_: 127.0.0.1;10.5.0.100#5335
+      PIHOLE_DNS_: 127.0.0.1;10.5.0.2#53
     volumes:
       - './etc-pihole/:/etc/pihole/'
       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
