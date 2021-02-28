@@ -1,46 +1,88 @@
 version: "3"
 
 networks:
-  unbound-pihole:
+  net-pihole:
     driver: bridge
     ipam:
-     config:
-       - subnet: 10.5.0.0/24
+      driver: default
+      config:
+        - subnet: 172.24.0.0/24
 services:
   unbound:
-    cap_add:
-      - NET_ADMIN
-      - SYS_ADMIN
     container_name: unbound
-    image: mvance/unbound:1.11.0
-    ports:
-      - 5335:53/udp
-      - 5335:53/tcp
-    volumes:
-      - ./unbound:/opt/unbound/etc/unbound/
-    #   - ./root.hints:/var/unbound/etc/root.hints
-    restart: always
+    image: klutchell/unbound
     networks:
-      unbound-pihole:
-        ipv4_address: 10.5.0.10
+      net-pihole:
+        ipv4_address: 172.24.0.2
+    hostname: unbound
+    ports:
+      - '5053:5053/udp'
+    restart: unless-stopped
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
+    networks:
+      net-pihole:
+        ipv4_address: 172.24.0.3
+    hostname: pihole
     ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "67:67/udp"
-      - "5380:80/tcp"
-      - "53443:443/tcp"
+      - '53:53/tcp'
+      - '53:53/udp'
+      - '5380:80/tcp'
+      - '53443:443/tcp'
     environment:
       TZ: 'America/Chicago'
-      PIHOLE_DNS_: 127.0.0.1;10.5.0.10#5335
+      PIHOLE_DNS_: 172.24.0.2#5053
+      # DNS1: 172.24.0.2#5053
+      # DNS2: '1.1.1.1'
     volumes:
       - './etc-pihole/:/etc/pihole/'
       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
-    cap_add:
-      - NET_ADMIN
     restart: unless-stopped
-    networks:
-      unbound-pihole:
-        ipv4_address: 10.5.0.2
+
+# version: "3"
+
+# networks:
+#   unbound-pihole:
+#     driver: bridge
+#     ipam:
+#      config:
+#        - subnet: 10.5.0.0/24
+# services:
+#   unbound:
+#     cap_add:
+#       - NET_ADMIN
+#       - SYS_ADMIN
+#     container_name: unbound
+#     image: mvance/unbound:1.11.0
+#     ports:
+#       - 5335:53/udp
+#       - 5335:53/tcp
+#     volumes:
+#       - ./unbound.conf:/opt/unbound/etc/unbound/
+#     #   - ./root.hints:/var/unbound/etc/root.hints
+#     restart: always
+#     networks:
+#       unbound-pihole:
+#         ipv4_address: 10.5.0.10
+#   pihole:
+#     container_name: pihole
+#     image: pihole/pihole:latest
+#     ports:
+#       - "53:53/tcp"
+#       - "53:53/udp"
+#       - "67:67/udp"
+#       - "5380:80/tcp"
+#       - "53443:443/tcp"
+#     environment:
+#       TZ: 'America/Chicago'
+#       PIHOLE_DNS_: 127.0.0.1;10.5.0.10#5335
+#     volumes:
+#       - './etc-pihole/:/etc/pihole/'
+#       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+#     cap_add:
+#       - NET_ADMIN
+#     restart: unless-stopped
+#     networks:
+#       unbound-pihole:
+#         ipv4_address: 10.5.0.2
