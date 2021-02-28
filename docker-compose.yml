@@ -17,7 +17,7 @@ services:
       - 5335:53/udp
       - 5335:53/tcp
     volumes:
-      - ./unboundconf/:/opt/unbound/etc/unbound/
+      - ./unbound:/opt/unbound/etc/unbound/
     #   - ./root.hints:/var/unbound/etc/root.hints
     restart: always
     networks:
