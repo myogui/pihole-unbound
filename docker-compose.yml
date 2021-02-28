@@ -1,0 +1,40 @@
+version: "3"
+
+networks:
+  unbound-pihole:
+    driver: bridge
+services:
+  unbound:
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    container_name: unbound
+    image: mvance/unbound:latest
+    ports:
+      - 5335:53/udp
+      - 5335:53/tcp
+    volumes:
+      - ./unbound.conf:/etc/unbound/unbound.conf
+      - ./root.hints:/var/unbound/etc/root.hints
+    restart: always
+    networks:
+      - unbound-pihole
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "5380:80/tcp"
+      - "53443:443/tcp"
+    environment:
+      TZ: 'America/Chicago'
+    volumes:
+      - './etc-pihole/:/etc/pihole/'
+      - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    networks:
+      - unbound-pihole
