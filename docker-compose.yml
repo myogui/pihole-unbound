@@ -18,7 +18,8 @@ services:
       - ./root.hints:/var/unbound/etc/root.hints
     restart: always
     networks:
-      - unbound-pihole
+      unbound-pihole:
+        ipv4_address: 10.0.0.1
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
@@ -30,6 +31,7 @@ services:
       - "53443:443/tcp"
     environment:
       TZ: 'America/Chicago'
+      PIHOLE_DNS_: 10.0.0.1#5335;1.1.1.1
     volumes:
       - './etc-pihole/:/etc/pihole/'
       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
