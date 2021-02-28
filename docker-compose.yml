@@ -5,7 +5,7 @@ networks:
     driver: bridge
     ipam:
      config:
-       - subnet: 10.5.0.0/16
+       - subnet: 10.5.0.0/24
 services:
   unbound:
     cap_add:
@@ -34,7 +34,7 @@ services:
       - "53443:443/tcp"
     environment:
       TZ: 'America/Chicago'
-      PIHOLE_DNS_: 10.5.0.100#5335;1.1.1.1
+      PIHOLE_DNS_: 127.0.0.1;10.5.0.100#5335
     volumes:
       - './etc-pihole/:/etc/pihole/'
       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
