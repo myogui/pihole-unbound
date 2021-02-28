@@ -22,7 +22,7 @@ services:
     restart: always
     networks:
       unbound-pihole:
-        ipv4_address: 10.5.0.2
+        ipv4_address: 10.5.0.10
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
@@ -34,7 +34,7 @@ services:
       - "53443:443/tcp"
     environment:
       TZ: 'America/Chicago'
-      PIHOLE_DNS_: 127.0.0.1;10.5.0.2#5335
+      PIHOLE_DNS_: 127.0.0.1;10.5.0.10#5335
     volumes:
       - './etc-pihole/:/etc/pihole/'
       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
