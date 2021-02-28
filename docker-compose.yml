@@ -16,8 +16,8 @@ services:
     ports:
       - 5335:53/udp
       - 5335:53/tcp
-    # volumes:
-    #   - ./unboundconf/:/opt/unbound/etc/unbound/
+    volumes:
+      - ./unboundconf/:/opt/unbound/etc/unbound/
     #   - ./root.hints:/var/unbound/etc/root.hints
     restart: always
     networks:
@@ -42,4 +42,5 @@ services:
       - NET_ADMIN
     restart: unless-stopped
     networks:
-      - unbound-pihole
+      unbound-pihole:
+        ipv4_address: 10.5.0.2
